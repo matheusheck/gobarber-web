@@ -14,7 +14,7 @@ import Button from '../../components/Button';
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const HandleSubmit = useCallback(async (data: object) => {
+  const handleSubmit = useCallback(async (data: object) => {
     try {
       formRef.current?.setErrors({});
 
@@ -42,7 +42,7 @@ const SignUp: React.FC = () => {
       <Background />
       <Content>
         <img src={logoImg} alt="GoBarber" />
-        <Form ref={formRef} onSubmit={HandleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <h1>Faça seu cadastro</h1>
           <Input icon={FiUser} name="name" placeholder="Nome" />
           <Input icon={FiMail} name="email" placeholder="E-mail" />

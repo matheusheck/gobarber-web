@@ -34,6 +34,7 @@ export const Container = styled.div`
   }
 
   &:hover span {
+    visibility: visible;
     transition: opacity 0.4s;
     opacity: 1;
   }
