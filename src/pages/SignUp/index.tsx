@@ -44,7 +44,7 @@ const SignUp: React.FC = () => {
           abortEarly: false,
         });
 
-        await api.post('/users, data');
+        await api.post('/users', data);
         addToast({
           type: 'success',
           title: 'Sucesso no cadastro!',
