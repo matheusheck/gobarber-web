@@ -36,7 +36,7 @@ const ResetPassword: React.FC = () => {
         formRef.current?.setErrors({});
 
         const schema = yup.object().shape({
-          password: yup.string().min(6, 'No mínimo 6 dígitos'),
+          password: yup.string().min(6, 'No mínimo 6 dígitos').nullable(),
           password_confirmation: yup
             .string()
             .oneOf([yup.ref('password')], 'As senhas não são iguais...'),

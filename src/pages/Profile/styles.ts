@@ -1,46 +1,49 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { shade } from 'polished';
 
-import SignUpBackgroundImg from '../../assets/sign-up-background.png';
-
-export const Container = styled.div`
-  height: 100vh;
+export const Header = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 144px;
+  background-color: #28262e;
 
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
+  align-items: center;
+
+  > a {
+    color: #999591;
+    text-decoration: none;
+    margin: 70px 1000px 0 0;
+    transition: color 0.2s;
+
+    svg {
+      margin-right: 16px;
+    }
+
+    &:hover {
+      color: ${shade(0.2, '#999591')};
+    }
+  }
 `;
 
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 48px auto;
 
   place-content: center;
 
   width: 100%;
   max-width: 700px;
-`;
 
-const apperFromRight = keyframes`
-  from{
-    opacity: 0;
-    transform: translateX(+50px);
+  h1 {
+    text-align: left;
+    font-size: 24px;
+    font-weight: 400px;
   }
-  to{
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-
-export const AnimationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  animation: ${apperFromRight} 1s;
-
-  width: 100%;
-  max-width: 700px;
 
   form {
     margin: 80px 0;
@@ -64,28 +67,47 @@ export const AnimationContainer = styled.div`
       }
     }
   }
+`;
 
-  > a {
-    color: #f4ede8;
-    text-decoration: none;
-    margin-top: 24px;
-    transition: color 0.2s;
+export const AvatarInput = styled.div`
+  position: relative;
 
-    display: flex;
-    align-items: center;
+  img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+  }
 
-    svg {
-      margin-right: 16px;
-    }
+  label {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #ff9000;
+    right: 0;
+    bottom: 0;
+    transition: background-color 0.2s;
+    cursor: pointer;
 
     &:hover {
-      color: ${shade(0.2, '#f4ede8')};
+      background: ${shade(0.2, '#ff9000')};
     }
+
+    input {
+      display: none;
+    }
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: #312e38;
+    margin-top: 14px;
+    margin-left: 14px;
   }
 `;
 
-export const Background = styled.div`
-  flex: 1;
-  background: url(${SignUpBackgroundImg}) no-repeat center center;
-  background-size: cover;
+export const Password = styled.div`
+  padding-top: 20px;
 `;

@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
+import React, { useCallback, useRef, ChangeEvent } from 'react';
+import { FiArrowLeft, FiMail, FiLock, FiUser, FiCamera } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as yup from 'yup';
@@ -8,26 +8,48 @@ import getValidationErrors from '../../utils/getValidationErrors';
 
 import api from '../../services/api';
 import { useToast } from '../../hooks/Toast';
-
-import logoImg from '../../assets/logo.svg';
-import { Container, Background, Content, AnimationContainer } from './styles';
-
+import { useAuth } from '../../hooks/Auth';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-interface SignUpFormData {
+import { Header, AvatarInput, Content, Password } from './styles';
+
+interface ProfileFormData {
   name: string;
   email: string;
+  old_password: string;
   password: string;
+  password_confirmation: string;
 }
 
-const SignUp: React.FC = () => {
+const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
+  const { user, updateUser } = useAuth();
   const history = useHistory();
 
+  const handleAvatarInput = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const data = new FormData();
+
+        data.append('avatar', e.target.files[0]);
+
+        api.patch('/users/avatar', data).then(response => {
+          updateUser(response.data);
+
+          addToast({
+            type: 'success',
+            title: 'Avatar atualizado!',
+          });
+        });
+      }
+    },
+    [addToast, updateUser],
+  );
+
   const handleSubmit = useCallback(
-    async (data: SignUpFormData) => {
+    async (data: ProfileFormData) => {
       try {
         formRef.current?.setErrors({});
 
@@ -36,22 +58,58 @@ const SignUp: React.FC = () => {
           email: yup
             .string()
             .required('E-mail obrigatório')
-            .email('Digite um email válido'),
-          password: yup.string().min(6, 'No mínimo de 6 dígitos'),
+            .email('Digite um e-mail válido'),
+          old_password: yup.string(),
+          password: yup.string().when('old_password', {
+            is: val => !!val.length,
+            then: yup.string().required('Campo obrigatório'),
+            otherwise: yup.string(),
+          }),
+          password_confirmation: yup
+            .string()
+            .when('old_password', {
+              is: val => !!val.length,
+              then: yup.string().required('Campo obrigatório'),
+              otherwise: yup.string(),
+            })
+            .oneOf([yup.ref('password')], 'Confirmação incorreta'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await api.post('/users', data);
+        const {
+          name,
+          email,
+          old_password,
+          password,
+          password_confirmation,
+        } = data;
+
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
+
+        const response = await api.put('/profile', formData);
+
+        updateUser(response.data);
+
+        history.push('/dashboard');
+
         addToast({
           type: 'success',
-          title: 'Sucesso no cadastro!',
-          description: 'Você já pode fazer seu login no GoBarber!',
+          title: 'Sucesso na alteração!',
+          description: 'Você já pode conferir seus dados!',
         });
-
-        history.push('/');
       } catch (err) {
         if (err instanceof yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -63,40 +121,62 @@ const SignUp: React.FC = () => {
 
         addToast({
           type: 'error',
-          title: 'Erro na cadastro',
-          description: 'Houve um erro no cadastr. Tente novamente.',
+          title: 'Erro na atualização',
+          description: 'Houve um erro. Tente novamente.',
         });
       }
     },
-    [addToast, history],
+    [addToast, history, updateUser],
   );
 
   return (
-    <Container>
-      <Background />
+    <>
+      <Header>
+        <Link to="/">
+          <FiArrowLeft size={22} />
+        </Link>
+      </Header>
       <Content>
-        <AnimationContainer>
-          <img src={logoImg} alt="GoBarber" />
-          <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu cadastro</h1>
-            <Input icon={FiUser} name="name" placeholder="Nome" />
-            <Input icon={FiMail} name="email" placeholder="E-mail" />
+        <AvatarInput>
+          <img src={user.avatar_url} alt={user.name} />
+          <label htmlFor="avatar">
+            <FiCamera />
+            <input type="file" id="avatar" onChange={handleAvatarInput} />
+          </label>
+        </AvatarInput>
+        <Form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          initialData={{ name: user.name, email: user.email }}
+        >
+          <h1>Meu Perfil</h1>
+          <Input icon={FiUser} name="name" placeholder="Nome" />
+          <Input icon={FiMail} name="email" placeholder="E-mail" />
+          <Password>
+            <Input
+              icon={FiLock}
+              name="old_password"
+              type="password"
+              placeholder="Senha antiga"
+            />
             <Input
               icon={FiLock}
               name="password"
               type="password"
-              placeholder="Senha"
+              placeholder="Senha nova"
             />
-            <Button type="submit">Cadastrar</Button>
-          </Form>
-          <Link to="/">
-            <FiArrowLeft />
-            Voltar para login
-          </Link>
-        </AnimationContainer>
+            <Input
+              icon={FiLock}
+              name="password_confirmation"
+              type="password"
+              placeholder="Confirme a senha"
+            />
+          </Password>
+          <Button type="submit">Salvar alterações</Button>
+        </Form>
       </Content>
-    </Container>
+    </>
   );
 };
 
-export default SignUp;
+export default Profile;
