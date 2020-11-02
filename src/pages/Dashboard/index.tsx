@@ -6,6 +6,7 @@ import 'react-day-picker/lib/style.css';
 
 import { FiClock, FiPower } from 'react-icons/fi';
 import { parseISO } from 'date-fns/esm';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Header,
@@ -40,11 +41,12 @@ interface AppointmentCard {
 
 const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [appointments, setAppointments] = useState<AppointmentCard[]>([]);
-  const [monthAvailability, setMonthAvailability] = useState<
-    MonthAvailabilityItem[]
-  >([]);
+
+  // const [currentMonth, setCurrentMonth] = useState(new Date());
+  // const [monthAvailability, setMonthAvailability] = useState<
+  //   MonthAvailabilityItem[]
+  // >([]);
 
   const { signOut, user } = useAuth();
 
@@ -74,22 +76,22 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  const handleMonthChange = useCallback((month: Date) => {
-    setCurrentMonth(month);
-  }, []);
+  // const handleMonthChange = useCallback((month: Date) => {
+  //   setCurrentMonth(month);
+  // }, []);
 
-  useEffect(() => {
-    api
-      .get(`/providers/${user.id}/month-availability`, {
-        params: {
-          year: currentMonth.getFullYear(),
-          month: currentMonth.getMonth() + 1,
-        },
-      })
-      .then(response => {
-        setMonthAvailability(response.data);
-      });
-  }, [currentMonth, user.id]);
+  // useEffect(() => {
+  //   api
+  //     .get(`/providers/${user.id}/month-availability`, {
+  //       params: {
+  //         year: currentMonth.getFullYear(),
+  //         month: currentMonth.getMonth() + 1,
+  //       },
+  //     })
+  //     .then(response => {
+  //       setMonthAvailability(response.data);
+  //     });
+  // }, [currentMonth, user.id]);
 
   useEffect(() => {
     api
@@ -106,6 +108,10 @@ const Dashboard: React.FC = () => {
             ...appointment,
             hourFormatted: format(parseISO(appointment.date), 'HH:mm'),
           };
+        });
+
+        appointmentsFormatted.sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
         });
 
         setAppointments(appointmentsFormatted);
@@ -150,10 +156,14 @@ const Dashboard: React.FC = () => {
           <img src={logoImg} alt="GoBarber logo" />
 
           <Profile>
-            <img src={user.avatar_url} alt={user.name} />
+            <Link to="/profile">
+              <img src={user.avatar_url} alt={user.name} />
+            </Link>
             <div>
               <span>Bem-vindo,</span>
-              <strong>{user.name}</strong>
+              <Link to="/profile">
+                <strong>{user.name}</strong>
+              </Link>
             </div>
           </Profile>
 
@@ -243,7 +253,6 @@ const Dashboard: React.FC = () => {
             selectedDays={selectedDate}
             modifiers={{ available: { daysOfWeek: [1, 2, 3, 4, 5] } }}
             onDayClick={handleDayChange}
-            onMonthChange={handleMonthChange}
             months={[
               'Janeiro',
               'Fevereiro',
