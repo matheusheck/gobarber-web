@@ -149,10 +149,6 @@ const Dashboard: React.FC = () => {
     });
   }, [appointments]);
 
-  const today = useMemo(() => {
-    return new Date();
-  }, []);
-
   return (
     <Container>
       <Header>
@@ -253,7 +249,7 @@ const Dashboard: React.FC = () => {
           <DayPicker
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
             fromMonth={new Date()}
-            disabledDays={[{ daysOfWeek: [0, 6] }, { before: today }]}
+            disabledDays={[{ daysOfWeek: [0, 6] }]}
             selectedDays={selectedDate}
             modifiers={{ available: { daysOfWeek: [1, 2, 3, 4, 5] } }}
             onDayClick={handleDayChange}
