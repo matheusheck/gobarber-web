@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e2be7e24-4ff5-491d-abf6-cffcd75144c6/deploy-status)](https://app.netlify.com/sites/stoic-lewin-c0e1fb/deploys) 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e2be7e24-4ff5-491d-abf6-cffcd75144c6/deploy-status)](https://app.netlify.com/sites/stoic-lewin-c0e1fb/deploys)
 
 # GoBarber - Provider access
 
@@ -36,9 +36,10 @@ sudo add-apt-repository ppa:chris-lea/node.js
 sudo apt-get update
 sudo apt-get install nodejs
 
-####Node installation on Windows
+#### Node installation on Windows
 
 Just go on official Node.js website & grab the installer. Also, be sure to have git available in your PATH, npm might need it.
+
 ---
 ## Install
 
