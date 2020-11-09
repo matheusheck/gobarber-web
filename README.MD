@@ -2,6 +2,8 @@
 
 # GoBarber - Provider access
 
+![Image of GoBarber/dashboard](https://gobarber-heck.s3.us-east-2.amazonaws.com/Screenshot+2020-11-09+at+02.06.45.png)
+
 ## Requirements
 
 For development, you will only need Node.js installed on your environment.
