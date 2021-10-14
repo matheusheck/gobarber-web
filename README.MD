@@ -1,6 +1,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e2be7e24-4ff5-491d-abf6-cffcd75144c6/deploy-status)](https://app.netlify.com/sites/stoic-lewin-c0e1fb/deploys)
 
 # GoBarber - Provider access
+Scheduler frontend based on React. A SPA consuming REST API.
 
 ![Image of GoBarber/dashboard](https://gobarber-heck.s3.us-east-2.amazonaws.com/Screenshot+2020-11-09+at+02.06.45.png)
 
